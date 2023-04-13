@@ -16,5 +16,4 @@ public class BoardListDomain {
 	private String bdContent;
 	private String bdCreateAt;
 	private String bdUpdateAt;
-
 }

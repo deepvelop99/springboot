@@ -4,7 +4,7 @@
 		style="display: block; text-align: center;"></div>
 	<div class="section form" th:unless="${detail}"
 		style="display: block; text-align: center;">
-		<form class="form" role="form" action="searchMyContent" method="post">
+		<form class="form" role="form" action="searchLevContent" method="post">
 			<input id="searchtitle" type="text" name="searchtitle"
 				placeholder="제목을 입력하세요" style="display: inline-block; width: 80%;" />
 			<button type="submit" style="display: inline-block;">검색</button>
@@ -31,10 +31,11 @@
 
 			<tbody>
 
-				<tr th:each="item : ${items}" th:if="${item.mbId == session.id}">
+				<tr th:each="item : ${items}"
+					th:if="${item.mbLevel <= session.mbLevel}">
 					<td th:text="${item.bdSeq}"></td>
 					<td><a a th:text="${item.bdTitle}"
-						th:href="@{/mydetail(bdSeq = ${item.bdSeq})}"></a></td>
+						th:href="@{/levdetail(bdSeq = ${item.bdSeq})}"></a></td>
 					<td th:text="${item.mbId}"></td>
 					<td th:text="${item.bdCreateAt}"></td>
 					<td th:text="${item.bdUpdateAt}"></td>
@@ -69,9 +70,9 @@
 		</div>
 		<th:block th:if="${detail.mbId == session.id}">
 			<div style="padding: 30px 0; text-align: right;">
-				<a th:href="@{/mypageedit(bdSeq = ${detail.bdSeq})}"><button>수정</button></a>
+				<a th:href="@{/levedit(bdSeq = ${detail.bdSeq})}"><button>수정</button></a>
 				<a th:href="@{/remove(bdSeq = ${detail.bdSeq})}"><button>삭제</button></a>
-				<a th:href="@{/myPage}"><button
+				<a th:href="@{levList}"><button
 						style="background-color: #00a2be; color: white; margin-left: 20px">목록으로</button></a>
 		</th:block>
 	</th:block>

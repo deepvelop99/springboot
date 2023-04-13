@@ -10,10 +10,10 @@ import com.co.kr.domain.LoginDomain;
 @Mapper
 public interface UserMapper {
 	
-	//전체 리스트 조회
+	//하나 리스트 조회
     public LoginDomain mbSelectList(Map<String, String> map);
     
-    //전체데이터
+    //전체 리스트 조회
     public List<LoginDomain> mbAllList(Map<String, Integer> map);
     
     // 전체갯수
@@ -33,5 +33,11 @@ public interface UserMapper {
     
     //삭제
     public void mbRemove(Map<String, String> map);
+    
+    //등급 업데이트하기
+    public void mbLevelUpdate(LoginDomain loginDomain);
+    
+    //아이디로 검색하기
+    public List<LoginDomain> searchMemberById(Map<String, String> map);
 }
 

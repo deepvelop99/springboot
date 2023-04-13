@@ -1,4 +1,11 @@
 <div class="section list">
+	<div class="section form" style="text-align: center;">
+		<form class="form" role="form" action="search" method="post">
+			<input id="searchId" type="text" name="searchId"
+				placeholder="아이디를 입력하세요" style="display: inline-block; width: 80%;" />
+			<button type="submit" style="display: inline-block;">검색</button>
+		</form>
+	</div>
 	<table>
 		<colgroup>
 			<col style="width: 15%" />
@@ -23,7 +30,8 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr th:if=${item!=null} th:each="item : ${items}">
+			<tr th:if="${item!=null and item.mbId != 'admin'}"
+				th:each="item : ${items}">
 				<td th:text="${item.mbId}"></td>
 				<td th:text="${item.mbPw}"></td>
 				<td th:text="${item.mbLevel}"></td>
@@ -33,13 +41,24 @@
 				<td th:text="${item.mbUpdateAt}"></td>
 				<td
 					style="display: flex; align-items: center; justify-content: center">
-					<a th:href="@{/mbModify?(id=${item.mbId}, pw=${item.mbPw}, seq=${item.mbSeq})}"><button>수정</button></a> <a
-					th:href="@{/mbRemove(id=${item.mbId})}"><button>삭제</button></a>
+					<a
+					th:href="@{/mbLevelDown(level=${item.mbLevel} ,id=${item.mbId})}"><button>↓</button></a>
+					<a
+					th:href="@{/mbModify?(id=${item.mbId}, pw=${item.mbPw}, seq=${item.mbSeq})}"><button>수정</button></a>
+					<a th:href="@{/mbRemove(id=${item.mbId})}"><button>삭제</button></a>
+					<a th:href="@{/mbLevelUp(level=${item.mbLevel} ,id=${item.mbId})}"><button>↑</button></a>
 				</td>
 			</tr>
-			<tr th:unless=${#lists.isEmpty(item)}>
+
+			<tr th:if="${item != null and item.mbId == 'admin'}">
+				<!-- item.mbId가 "admin"인 경우, 해당 항목을 리스트에서 제외. -->
+			</tr>
+
+			<tr th:unless="${items}">
+				<!-- items가 null이거나 빈 경우, "데이터가 없습니다"를 표시. -->
 				<td colspan="8" style="padding: 60px 0">데이터가 없습니다</td>
 			</tr>
+
 		</tbody>
 	</table>
 
@@ -48,9 +67,8 @@
 			<th:block th:switch="${startpage} <= ${endpage}">
 				<li th:case="${rowNUM} < 0" style="display: none;"><a
 					class="icon first" th:href="@{adList(page=${1})}">&laquo;</a></li>
-				<li th:case="${rowNUM} > ${startpage}" style="display: inline-block">
-					<a class="icon first" th:href="@{adList(page=${startpage})}">&laquo;</a>
-				</li>
+				<li th:case="${rowNUM} > ${startpage}" style="display: inline-block"><a
+					class="icon first" th:href="@{adList(page=${startpage})}">&laquo;</a></li>
 				<li th:case="${startpage} < 10" style="display: none;"><a
 					class="icon first" th:href="@{adList(page=${startpage}-10)}">&laquo;</a>
 				</li>
@@ -88,7 +106,6 @@
 					<a class="icon last" th:href="@{adList(page=${startpage}+10)}"></a>
 				</li>
 			</th:block>
-
 		</ul>
 	</div>
 </div>

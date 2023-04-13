@@ -45,7 +45,6 @@ public class FileListController {
 
 		map.put("bdSeq", Integer.parseInt(bdSeq));
 		BoardListDomain boardListDomain = uploadService.boardSelectOne(map);
-		System.out.println("boardListDomain" + boardListDomain);
 		List<BoardFileDomain> fileList = uploadService.boardSelectOneFile(map);
 
 		for (BoardFileDomain list : fileList) {
@@ -58,19 +57,9 @@ public class FileListController {
 		session.setAttribute("files", fileList);
 		return mav;
 	}
-
+	
 	@Autowired
 	private UploadService uploadService;
-
-	@PostMapping(value = "photo")
-	public ModelAndView photo() {
-		ModelAndView mav = new ModelAndView();
-		List<BoardListDomain> items = uploadService.boardList();
-		System.out.println("items ==> " + items);
-		mav.addObject("items", items);
-		mav.setViewName("photo/photoList.html");
-		return mav;
-	}
 
 	@RequestMapping(value = "upload")
 	public ModelAndView bdUpload(FileListVO fileListVO, MultipartHttpServletRequest request, HttpServletRequest httpReq,
@@ -79,8 +68,7 @@ public class FileListController {
 		ModelAndView mav = new ModelAndView();
 		int bdSeq = uploadService.fileProcess(fileListVO, request, httpReq);
 		fileListVO.setContent(""); // 초기화
-		fileListVO.setTitle(""); // 초기화
-		// 화면에서 넘어올때는 bdSeq String이라 string으로 변환해서 넣어즘
+		fileListVO.setTitle("");
 		mav = bdSelectOneCall(fileListVO, String.valueOf(bdSeq), request);
 		mav.setViewName("board/boardList.html");
 		return mav;
@@ -164,8 +152,6 @@ public class FileListController {
 		mav.setViewName("board/boardEditList.html");
 		return mav;
 	}
-
-	
 	@PostMapping(value="/editSave")
 	public ModelAndView editSave(BoardFileDomain boardFileDomain, FileListVO fileListVO, MultipartHttpServletRequest request, HttpServletRequest httpReq,
 			HttpServletResponse response) throws IOException, ParseException {
@@ -174,9 +160,8 @@ public class FileListController {
 		System.out.println(bdSeq+"번째 게시물 수정완료");
 		
 		uploadService.bdFileRemove(boardFileDomain);
-		fileListVO.setContent(""); // 초기화
-		fileListVO.setTitle(""); // 초기화
-		// 화면에서 넘어올때는 bdSeq String이라 string으로 변환해서 넣어즘
+		fileListVO.setContent("");
+		fileListVO.setTitle("");
 		mav = bdSelectOneCall(fileListVO, String.valueOf(bdSeq), request);
 		mav.setViewName("board/boardList.html");
 		response.setContentType("text/html; charset=euc-kr");
@@ -184,6 +169,163 @@ public class FileListController {
 		out.println("수정 완료");
 		out.flush();
 
+		return mav;
+	}
+	@RequestMapping(value = "levdetail", method = RequestMethod.GET)
+	public ModelAndView levbdSelectOneCall(@ModelAttribute("fileListVO") FileListVO fileListVO,
+			@RequestParam("bdSeq") String bdSeq, HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		HttpSession session = request.getSession();
+
+		map.put("bdSeq", Integer.parseInt(bdSeq));
+		BoardListDomain boardListDomain = uploadService.boardSelectOne(map);
+		System.out.println("boardListDomain" + boardListDomain);
+		List<BoardFileDomain> fileList = uploadService.boardSelectOneFile(map);
+
+		for (BoardFileDomain list : fileList) {
+			String path = list.getUpFilePath().replaceAll("\\\\", "/");
+			list.setUpFilePath(path);
+		}
+		mav.addObject("detail", boardListDomain);
+		mav.addObject("files", fileList);
+		mav.setViewName("levboard/levList.html");
+		session.setAttribute("files", fileList);
+		return mav;
+	}
+
+	@RequestMapping(value = "levedit", method = RequestMethod.GET)
+	public ModelAndView lvedit(FileListVO fileListVO, @RequestParam("bdSeq") String bdSeq, HttpServletRequest request) throws IOException {
+		ModelAndView mav = new ModelAndView();
+
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		HttpSession session = request.getSession();
+		
+		map.put("bdSeq", Integer.parseInt(bdSeq));
+		BoardListDomain boardListDomain =uploadService.boardSelectOne(map);
+		List<BoardFileDomain> fileList =  uploadService.boardSelectOneFile(map);
+		
+		for (BoardFileDomain list : fileList) {
+			String path = list.getUpFilePath().replaceAll("\\\\", "/");
+			list.setUpFilePath(path);
+		}
+
+		fileListVO.setSeq(boardListDomain.getBdSeq());
+		fileListVO.setContent(boardListDomain.getBdContent());
+		fileListVO.setTitle(boardListDomain.getBdTitle());
+		fileListVO.setIsEdit("edit");  // upload 재활용하기위해서
+		
+	
+		mav.addObject("detail", boardListDomain);
+		mav.addObject("files", fileList);
+		mav.addObject("fileLen",fileList.size());
+		
+		mav.setViewName("/levboard/boardEditList.html");
+		return mav;
+	}
+	@PostMapping(value="/leveditSave")
+	public ModelAndView leveeditSave(BoardFileDomain boardFileDomain, FileListVO fileListVO, MultipartHttpServletRequest request, HttpServletRequest httpReq,
+			HttpServletResponse response) throws IOException, ParseException {
+		ModelAndView mav = new ModelAndView();
+		int bdSeq = uploadService.fileProcess(fileListVO, request, httpReq);
+		System.out.println(bdSeq+"번째 게시물 수정완료");
+		
+		uploadService.bdFileRemove(boardFileDomain);
+		fileListVO.setContent(""); // 초기화
+		fileListVO.setTitle("");
+		mav = levbdSelectOneCall(fileListVO, String.valueOf(bdSeq), request);
+		mav.setViewName("levboard/levList.html");
+		return mav;
+	}
+	@RequestMapping(value = "levupload")
+	public ModelAndView mypagebdUpload(FileListVO fileListVO, MultipartHttpServletRequest request, HttpServletRequest httpReq,
+			HttpServletResponse response) throws IOException, ParseException {
+
+		ModelAndView mav = new ModelAndView();
+		int bdSeq = uploadService.fileProcess(fileListVO, request, httpReq);
+		fileListVO.setContent("");
+		fileListVO.setTitle("");
+		mav = levbdSelectOneCall(fileListVO, String.valueOf(bdSeq), request);
+		mav.setViewName("levboard/levList.html");
+		return mav;
+	}
+
+	@RequestMapping(value = "mydetail", method = RequestMethod.GET)
+	public ModelAndView mybdSelectOneCall(@ModelAttribute("fileListVO") FileListVO fileListVO,
+			@RequestParam("bdSeq") String bdSeq, HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		HttpSession session = request.getSession();
+
+		map.put("bdSeq", Integer.parseInt(bdSeq));
+		BoardListDomain boardListDomain = uploadService.boardSelectOne(map);
+		System.out.println("boardListDomain" + boardListDomain);
+		List<BoardFileDomain> fileList = uploadService.boardSelectOneFile(map);
+
+		for (BoardFileDomain list : fileList) {
+			String path = list.getUpFilePath().replaceAll("\\\\", "/");
+			list.setUpFilePath(path);
+		}
+		mav.addObject("detail", boardListDomain);
+		mav.addObject("files", fileList);
+		mav.setViewName("/mypage/myPageList.html");
+		session.setAttribute("files", fileList);
+		return mav;
+	}
+
+	@RequestMapping(value = "mypageedit", method = RequestMethod.GET)
+	public ModelAndView mypageedit(FileListVO fileListVO, @RequestParam("bdSeq") String bdSeq, HttpServletRequest request) throws IOException {
+		ModelAndView mav = new ModelAndView();
+
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		HttpSession session = request.getSession();
+		
+		map.put("bdSeq", Integer.parseInt(bdSeq));
+		BoardListDomain boardListDomain =uploadService.boardSelectOne(map);
+		List<BoardFileDomain> fileList =  uploadService.boardSelectOneFile(map);
+		
+		for (BoardFileDomain list : fileList) {
+			String path = list.getUpFilePath().replaceAll("\\\\", "/");
+			list.setUpFilePath(path);
+		}
+
+		fileListVO.setSeq(boardListDomain.getBdSeq());
+		fileListVO.setContent(boardListDomain.getBdContent());
+		fileListVO.setTitle(boardListDomain.getBdTitle());
+		fileListVO.setIsEdit("edit");  // upload 재활용하기위해서
+		
+	
+		mav.addObject("detail", boardListDomain);
+		mav.addObject("files", fileList);
+		mav.addObject("fileLen",fileList.size());
+		
+		mav.setViewName("/mypage/boardEditList.html");
+		return mav;
+	}
+	@PostMapping(value="/mypageeditSave")
+	public ModelAndView mypageeditSave(BoardFileDomain boardFileDomain, FileListVO fileListVO, MultipartHttpServletRequest request, HttpServletRequest httpReq,
+			HttpServletResponse response) throws IOException, ParseException {
+		ModelAndView mav = new ModelAndView();
+		int bdSeq = uploadService.fileProcess(fileListVO, request, httpReq);
+		System.out.println(bdSeq+"번째 게시물 수정완료");
+		
+		uploadService.bdFileRemove(boardFileDomain);
+		fileListVO.setContent(""); // 초기화
+		fileListVO.setTitle("");
+		mav = levbdSelectOneCall(fileListVO, String.valueOf(bdSeq), request);
+		mav.setViewName("mypage/myPageList.html");
+		return mav;
+	}
+	@RequestMapping(value = "mypageupload")
+	public ModelAndView mypageUpload(FileListVO fileListVO, MultipartHttpServletRequest request, HttpServletRequest httpReq,
+			HttpServletResponse response) throws IOException, ParseException {
+
+		ModelAndView mav = new ModelAndView();
+		int bdSeq = uploadService.fileProcess(fileListVO, request, httpReq);
+		fileListVO.setContent("");
+		fileListVO.setTitle("");
+		mav = levbdSelectOneCall(fileListVO, String.valueOf(bdSeq), request);
+		mav.setViewName("mypage/myPageList.html");
 		return mav;
 	}
 }

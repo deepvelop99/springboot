@@ -15,9 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.co.kr.domain.BoardListDomain;
+import com.co.kr.domain.LevListDomain;
 import com.co.kr.domain.LoginDomain;
 import com.co.kr.service.UploadService;
 import com.co.kr.service.UserService;
@@ -87,6 +89,26 @@ public class UserController {
 		mav.setViewName("board/boardList.html");
 		return mav;
 	}
+	@RequestMapping(value = "levList")
+	public ModelAndView levList(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		ModelAndView mav = new ModelAndView();
+		List<LevListDomain> items = uploadService.levboardList();
+		System.out.println("items ==> " + items);
+		mav.addObject("items", items);
+		mav.setViewName("levboard/levList.html");
+		return mav;
+	}
+	@RequestMapping(value="myPage",method=RequestMethod.GET)
+	public ModelAndView myPage(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		ModelAndView mav = new ModelAndView();
+		List<BoardListDomain> items = uploadService.boardList();
+		System.out.println("items --> " + items);
+		mav.addObject("items", items);
+		mav.setViewName("mypage/myPageList.html");
+		return mav;
+	}
 
 	// 멤버 관리
 	@RequestMapping(value = "adList")
@@ -135,7 +157,7 @@ public class UserController {
 		loginDomain.setMbId(request.getParameter("id"));
 		loginDomain.setMbPw(request.getParameter("pw"));
 		loginDomain.setMbIp(CommonUtils.getClientIP(request));
-		loginDomain.setMbLevel("2");
+		loginDomain.setMbLevel(1);
 		loginDomain.setMbUse("Y");
 		if (check(request) == 1) {
 			System.out.println(check(request));
@@ -165,7 +187,7 @@ public class UserController {
 		loginDomain.setMbId(request.getParameter("id"));
 		loginDomain.setMbPw(request.getParameter("pw"));
 		loginDomain.setMbIp(CommonUtils.getClientIP(request));
-		loginDomain.setMbLevel("2");
+		loginDomain.setMbLevel(1);
 		loginDomain.setMbUse("Y");
 		if (check(request) == 1) {
 			System.out.println(check(request));
@@ -275,7 +297,6 @@ public class UserController {
 		loginDomain.setMbId(request.getParameter("id"));
 		loginDomain.setMbPw(request.getParameter("pw"));
 		loginDomain.setMbIp(CommonUtils.getClientIP(request));
-		loginDomain.setMbLevel("2");
 		loginDomain.setMbUse("Y");
 		userService.mbUpdate(loginDomain);
 		mav.addObject("data", new AlertUtils("멤버 수정이 완료되었습니다.", "adList"));
@@ -283,4 +304,98 @@ public class UserController {
 		mav.setViewName("alert/alert");
 		return mav;
 	}
+	
+	//관리자 멤버 레벨 올리기
+	@RequestMapping(value="mbLevelDown")
+	public String mbLevelDown(LoginDomain loginDomain, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		ModelAndView mav = new ModelAndView();
+		loginDomain.setMbId(request.getParameter("id"));
+		loginDomain.setMbPw(request.getParameter("pw"));
+		loginDomain.setMbIp(CommonUtils.getClientIP(request));
+		loginDomain.setMbLevel(Integer.parseInt(request.getParameter("level"))-1);
+		loginDomain.setMbUse("Y");
+		userService.mbLevelUpdate(loginDomain);
+		System.out.println(loginDomain.getMbId()+"님 등급을 "+loginDomain.getMbLevel()+"로 내렸습니다.");
+		return "redirect:/adList";
+	}
+	
+	@RequestMapping(value="mbLevelUp")
+	public String mbLevelUp(LoginDomain loginDomain, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		ModelAndView mav = new ModelAndView();
+		loginDomain.setMbId(request.getParameter("id"));
+		loginDomain.setMbPw(request.getParameter("pw"));
+		loginDomain.setMbIp(CommonUtils.getClientIP(request));
+		loginDomain.setMbLevel(Integer.parseInt(request.getParameter("level"))+1);
+		loginDomain.setMbUse("Y");
+		userService.mbLevelUpdate(loginDomain);
+		System.out.println(loginDomain.getMbId()+"님 등급을 "+loginDomain.getMbLevel()+"로 올렸습니다.");
+		return "redirect:/adList";
+	}
+	
+	@RequestMapping(value="search")
+	public ModelAndView getSearchList(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		Map<String, Object> mapp = new HashMap();
+		mapp = Pagination.pagination(userService.mbGetAll(), request);
+		HashMap<String, Integer> map = new HashMap();
+		Pagination pagination = new Pagination();
+		map.put("rowNUM", Integer.parseInt(mapp.put("rowNUM", mapp).toString()));
+		map.put("pageNum", Integer.parseInt(mapp.put("pageNum", mapp).toString()));
+		map.put("startpage", Integer.parseInt(mapp.put("startpage", mapp).toString()));
+		map.put("endpage", Integer.parseInt(mapp.put("endpage", mapp).toString()));
+		map.put("offset", Integer.parseInt(mapp.put("offset", mapp).toString()));
+		map.put("contentnum", 10);
+		mav.addAllObjects(map);
+
+		HashMap<String, String> map2 = new HashMap<String, String>();
+		map2.put("mbId", request.getParameter("searchId"));
+		System.out.println("searchId"+request.getParameter("searchId"));
+		mav.addAllObjects(map2);
+		List<LoginDomain> items = userService.searchMemberById(map2);
+		mav.addObject("items", items);
+		mav.setViewName("admin/adminList.html");
+		return mav;
+	}
+
+	@RequestMapping(value="searchContent")
+	public ModelAndView searchContent(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("bdTitle",request.getParameter("searchtitle"));
+		System.out.println("searchtitle : "+request.getParameter("searchtitle"));
+		List<BoardListDomain> items = uploadService.searchBoardByTitle(map);
+		System.out.println("items ==> " + items);
+		mav.addObject("items", items);
+		mav.setViewName("board/boardList.html");
+		return mav;
+	}
+	
+	@RequestMapping(value="searchMyContent")
+	public ModelAndView searchMyContent(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("bdTitle",request.getParameter("searchtitle"));
+		System.out.println("searchtitle : "+request.getParameter("searchtitle"));
+		List<BoardListDomain> items = uploadService.searchBoardByTitle(map);
+		System.out.println("items ==> " + items);
+		mav.addObject("items", items);
+		mav.setViewName("mypage/myPageList.html");
+		return mav;
+	}
+	
+	@RequestMapping(value="searchLevContent")
+	public ModelAndView searchLevContent(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		HttpSession session = request.getSession();
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("bdTitle",request.getParameter("searchtitle"));
+		System.out.println("searchtitle : "+request.getParameter("searchtitle"));
+		List<LevListDomain> items = uploadService.searchLevBoardByTitle(map);
+		System.out.println("items ==> " + items);
+		mav.addObject("items", items);
+		mav.setViewName("levboard/levList.html");
+		return mav;
+	}     
 }

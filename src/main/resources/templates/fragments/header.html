@@ -11,12 +11,17 @@
            </div>
            
            <ul class="nav">
-               <th:block>
-               <!--<th:block th:if="${session.userAuth}==3"> 쿼리스트링보내기 -->
+               <th:block th:if="${session.id=='admin'}">
                    <li class="on"><a class="menu1" th:href="@{adList}">관리자</a></li>
                </th:block>
                <th:block>
+                   <li class="on"><a class="menu1" th:href="@{myPage}">마이페이지</a></li>
+               </th:block>
+               <th:block>
                    <li class="on"><a class="menu1" th:href="@{bdList}">게시판</a></li>
+               </th:block>
+               <th:block>
+                   <li class="on"><a class="menu1" th:href="@{levList}">등급별 게시판</a></li>
                </th:block>
                <th:block>
                		<li class="on"><a class="menu1" th:href="@{tdList}">To Do리스트</a></li>

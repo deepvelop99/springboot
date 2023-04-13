@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.co.kr.domain.BoardListDomain;
 import com.co.kr.domain.BoardContentDomain;
 import com.co.kr.domain.BoardFileDomain;
+import com.co.kr.domain.LevListDomain;
 import java.util.HashMap;
 
 @Mapper
@@ -14,12 +15,19 @@ public interface UploadMapper {
 
 	//list
 	public List<BoardListDomain> boardList();
+	
+	//levelboardList
+	public List<LevListDomain> levboardList();
+	
+	//content upload
 	public void contentUpload(BoardContentDomain boardContentDomain);
+	
 	//file upload
 	public void fileUpload(BoardFileDomain boardFileDomain);
 
 	//content update
 	public void bdContentUpdate(BoardContentDomain boardContentDomain);
+
 	//file updata
 	public void bdFileUpdate(BoardFileDomain boardFileDomain);
 
@@ -30,6 +38,7 @@ public interface UploadMapper {
 	
 	//file delete 
 	public void bdFileRemove(BoardFileDomain boardFileDomain);
+	
 	//All File delete
 	public void bdFileAllRemove(HashMap<String, String> map);
 	
@@ -38,5 +47,11 @@ public interface UploadMapper {
 
 	//select one file
 	public List<BoardFileDomain> boardSelectOneFile(HashMap<String, Object> map);
+	
+	//search board by title
+	public List<BoardListDomain> searchBoardByTitle(HashMap<String, String> map);
+	
+	//search levboard by title
+	public List<LevListDomain> searchLevBoardByTitle(HashMap<String, String> map);
+
 }
-//content upload

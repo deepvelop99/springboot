@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.co.kr.domain.BoardFileDomain;
 import com.co.kr.domain.TodoFileDomain;
 import com.co.kr.domain.TodoListDomain;
 import com.co.kr.mapper.TodoMapper;
@@ -183,5 +184,19 @@ public class TodoController {
 		fileListVO.setTitle(""); // 초기화
 		mav.setViewName("todo/todoList.html");
 		return mav;
+	}
+	@RequestMapping(value="/tdRemove", method = RequestMethod.GET)
+	public String tdRemove(TodoFileDomain todoFileDomain, String tdSeq, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println(tdSeq + "번째 게시글 삭제.");
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		HttpSession session = request.getSession();
+
+		map.put("tdSeq", Integer.parseInt(tdSeq));
+		todoService.tdContentRemove(map);
+
+		todoFileDomain.setTdSeq(Integer.parseInt(tdSeq));
+		System.out.println(tdSeq + "번째 게시글 사진 삭제");
+		return "redirect:/tdList";
 	}
 }

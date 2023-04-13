@@ -31,4 +31,9 @@ public interface UserService {
     //delete 
     public void mbRemove(Map<String, String> map); 
     
+    //등급 업데이트하기
+    public void mbLevelUpdate(LoginDomain loginDomain);
+    
+    //멤버 id로 찾기
+    public List<LoginDomain> searchMemberById(Map<String, String> map);
 }

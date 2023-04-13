@@ -42,7 +42,11 @@ public class UserServiceImpl implements UserService {
 	public void mbRemove(Map<String, String> map) {
 		userMapper.mbRemove(map);
 	}
-
+	
+	@Override
+	public void mbLevelUpdate(LoginDomain loginDomain) {
+		userMapper.mbLevelUpdate(loginDomain);
+	}
 	@Override
 	public LoginDomain mbGetId(Map<String, String> map) {
 		return userMapper.mbGetId(map);
@@ -58,5 +62,9 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		return userMapper.mbGetAll();
 	}
-
+	
+	@Override
+    public List<LoginDomain> searchMemberById(Map<String, String> map) {
+		return userMapper.searchMemberById(map);
+	}
 }

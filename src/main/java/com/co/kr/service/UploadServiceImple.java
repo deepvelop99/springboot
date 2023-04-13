@@ -29,6 +29,7 @@ import com.co.kr.exception.RequestException;
 import com.co.kr.mapper.UploadMapper;
 import com.co.kr.util.CommonUtils;
 import com.co.kr.vo.FileListVO;
+import com.co.kr.domain.LevListDomain;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +40,11 @@ public class UploadServiceImple implements UploadService {
 
 	@Autowired
 	private UploadMapper uploadMapper;
+
+	
+	public List<LevListDomain> levboardList() {
+		return uploadMapper.levboardList();
+	}
 
 	@Override
 	public List<BoardListDomain> boardList() {
@@ -53,7 +59,8 @@ public class UploadServiceImple implements UploadService {
 
 		// content domain 생성
 		BoardContentDomain boardContentDomain = BoardContentDomain.builder().mbId(session.getAttribute("id").toString())
-				.bdTitle(fileListVO.getTitle()).bdContent(fileListVO.getContent()).build();
+				.bdTitle(fileListVO.getTitle()).bdContent(fileListVO.getContent())
+				.mbLevel((Integer) session.getAttribute("mbLevel")).build();
 
 		if (fileListVO.getIsEdit() != null) {
 			boardContentDomain.setBdSeq(Integer.parseInt(fileListVO.getSeq()));
@@ -220,11 +227,23 @@ public class UploadServiceImple implements UploadService {
 	}
 
 	// 관련된 id에 대해서 전체 파일 삭제
+	@Override
 	public void bdFileAllRemove(HashMap<String, String> map) {
 		uploadMapper.bdFileAllRemove(map);
 	}
 
+	@Override
 	public void bdContentAllRemove(HashMap<String, String> map) {
 		uploadMapper.bdContentAllRemove(map);
+	}
+
+	@Override
+	public List<BoardListDomain>searchBoardByTitle(HashMap<String, String> map){
+		return uploadMapper.searchBoardByTitle(map);
+	}
+
+	@Override
+	public List<LevListDomain> searchLevBoardByTitle(HashMap<String, String> map) {
+		return uploadMapper.searchLevBoardByTitle(map);
 	}
 }

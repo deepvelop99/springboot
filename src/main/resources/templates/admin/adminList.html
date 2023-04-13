@@ -16,7 +16,7 @@
 <head>
     <title>회원정보</title>
 </head>
-<div th:if=${session.id} layout:fragment="content">
+<div th:if="${session.id == 'admin'}" layout:fragment="content" style="display: block">
     <div class="container">
         <th:block th:include="admin/clause.html"></th:block>
         <th:block th:include="admin/list.html"></th:block>

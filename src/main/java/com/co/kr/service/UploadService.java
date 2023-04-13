@@ -10,32 +10,46 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.co.kr.domain.BoardContentDomain;
 import com.co.kr.domain.BoardFileDomain;
 import com.co.kr.domain.BoardListDomain;
+import com.co.kr.domain.LevListDomain;
 import com.co.kr.vo.FileListVO;
 
 public interface UploadService {
 	
 	public int fileProcess(FileListVO fileListVO, MultipartHttpServletRequest request, HttpServletRequest httpReq);
 	
-	// 전체 리스트 조회
+	// all list
 	public List<BoardListDomain> boardList();
-
+	
+	// 등급별 리스트 조회
+	public List<LevListDomain> levboardList();
+	
 	// 하나 삭제
 	public void bdContentRemove(HashMap<String, Object> map);
+	
 	// 전체 삭제
 	public void bdContentAllRemove(HashMap<String, String>map);
+	
 	// 하나 삭제
 	public void bdFileRemove(BoardFileDomain boardFileDomain);
 	
 	// 전체 삭제
 	public void bdFileAllRemove(HashMap<String, String> map);
+	
 	//select one
 	public BoardListDomain boardSelectOne(HashMap<String, Object> map);
 
 	//select one file
 	public List<BoardFileDomain> boardSelectOneFile(HashMap<String, Object> map);
 	
+	//content update
 	public void bdContentUpdate(BoardContentDomain boardContentDomain);
 
+	//file update
 	public void bdFileUpdate(BoardFileDomain boardFileDomain);
-		
+	
+	//search content by title
+	public List<BoardListDomain> searchBoardByTitle(HashMap<String, String> map);
+
+	//search levcontent by title
+	public List<LevListDomain> searchLevBoardByTitle(HashMap<String, String> map);
 }

@@ -1,0 +1,56 @@
+<div class="userInfo" th:if=${session.id}>
+	<span th:text="${session.id}"></span><span> 님 / </span> <span
+		th:text="${session.mbLevel}"></span><span> 레벨</span>
+	<button type="button">
+		<a th:href="@{logout}" style="color: #fff">로그아웃</a>
+	</button>
+	<button type="button">
+		<a th:href="@{drawal}" style="color: #fff">회원탈퇴</a>
+	</button>
+</div>
+
+<div class="title" style="color: #00a2be">방 리스트</div>
+<form role="form" action="rmupload" method="post"
+	enctype="multipart/form-data">
+	<div class="section form">
+		<table>
+			<colgroup>
+				<col style="width: 10%" />
+				<col style="width: 90%" />
+			</colgroup>
+			<tbody>
+				<tr>
+					<th>방타입</th>
+					<td><select name="rmType" id="rmType" required>
+							<option value="" selected disabled hidden>유형을 입력해주세요</option>
+							<option value="외창방">외창방</option>
+							<option value="내창방">내창방</option>
+					</select></td>
+				</tr>
+				<tr>
+					<th>방번호</th>
+					<td><input type="hidden" name="seq" placeholder="글번호" required />
+						<input type="text" name="title" placeholder="방번호" required /></td>
+				</tr>
+				<tr>
+					<th>금액</th>
+					<td><input type="text" id="story" name="content"
+						placeholder="금액을 적어주세요." required> </input></td>
+				</tr>
+				<tr>
+					<th>메모</th>
+					<td><textarea colspan="2" id="memo" name="memo"
+							placeholder="내용을 적어주세요." rows="5" cols="200"></textarea></td>
+				</tr>
+				<tr>
+					<th><label for="file">첨부파일</label></th>
+					<td><input type="file" id="file" name="files" multiple /></td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="button">
+			<button type="submit" style="margin-right: 11px">업로드하기</button>
+		</div>
+	</div>
+
+</form>

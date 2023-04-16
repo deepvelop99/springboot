@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @Builder(builderMethodName="builder")
 public class TodoListDomain {
-
 	private String tdSeq;
 	private String mbId;
 	private String tdTitle;

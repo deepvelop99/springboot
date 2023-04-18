@@ -1,33 +1,20 @@
-<div class="title" , style="color: #00a2be"
-	th:if="${session.id != 'admin'}">방 리스트</div>
+<div class="title" , style="color: #00a2be">방 리스트</div>
 <div class="section list">
 	<table>
 		<th:block th:if="${items}">
 			<colgroup>
-				<col style="width: 10%" />
-				<col style="width: 40%" />
-				<col style="width: 20%" />
-				<col style="width: 30%" />
+				<col style="width: 100%" />
 			</colgroup>
 			<thead>
 				<tr>
-					<th>예약</th>
-					<th>방번호</th>
-					<th>방타입</th>
-					<th>금액</th>
+					<th>댓글</th>
 				</tr>
 			</thead>
 
 			<tbody>
 				<tr th:each="item : ${items}" th:if="${not #lists.isEmpty(items)}">
-					<td th:href="@{/rmreservation}"></td>
-					<td><a a th:text="${item.rmTitle}"
-						th:href="@{/rmdetail(rmSeq = ${item.rmSeq})}"></a></td>
-					<td th:text="${item.rmContent}"></td>
-					<td th:text="${item.rmType}"></td>
-				</tr>
-				<tr th:unless="${not #lists.isEmpty(items)}">
-					<td colspan="8" style="padding: 60px 0">데이터가 없습니다</td>
+					<td th:text="${item.rmComment}"></td>
+					<td th:href="@{/rmdetail(rmComment = ${item.rmComment})}"></a></td>
 				</tr>
 			</tbody>
 	</table>

@@ -93,7 +93,7 @@ public class TodoController {
 		return mav;
 	}
 
-	@RequestMapping(value = "/tdremove", method = RequestMethod.GET)
+	@RequestMapping(value = "tdremove", method = RequestMethod.GET)
 	public ModelAndView remove(TodoFileDomain todoFileDomain, String tdSeq, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println(tdSeq + "번째 todo 삭제.");

@@ -12,7 +12,7 @@
            
            <ul class="nav">
                <th:block th:if="${session.id=='admin'}">
-                   <li class="on"><a class="menu1" th:href="@{adList}">관리자</a></li>
+                   <li class="on"><a class="menu1" th:href="@{adList(page=1)}">관리자</a></li>
                </th:block>
                <th:block>
                    <li class="on"><a class="menu1" th:href="@{myPage}">마이페이지</a></li>

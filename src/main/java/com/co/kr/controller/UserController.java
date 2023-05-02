@@ -90,7 +90,7 @@ public class UserController {
 
 		if (dupleCheck == 0) {
 			String alertText = "없는 아이디이거나 패스워드가 잘못되었습니다. 가입해주세요";
-			String redirectPath = "/main/signin";
+			String redirectPath = "/main";
 			CommonUtils.redirect(alertText, redirectPath, response);
 			return mav;
 		}
@@ -98,6 +98,7 @@ public class UserController {
 		String IP = CommonUtils.getClientIP(request);
 		session.setAttribute("ip", IP);
 		session.setAttribute("id", loginDomain.getMbId());
+		session.setAttribute("pw", loginDomain.getMbPw());
 		session.setAttribute("mbLevel", loginDomain.getMbLevel());
 		session.setAttribute("mac", getLocalMacAddress());
 
@@ -429,4 +430,34 @@ public class UserController {
 		mav.setViewName("levboard/levList.html");
 		return mav;
 	}     
+	
+	@RequestMapping(value="modify")
+	public ModelAndView modify(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		String id = request.getParameter("id");
+		String pw = request.getParameter("pw");
+		Integer level = Integer.parseInt(request.getParameter("level"));
+		mav.addObject("id",id);
+		mav.addObject("pw",pw);
+		mav.addObject("level",level);
+		mav.setViewName("modify.html");
+		return mav;
+	}
+	
+	@RequestMapping(value="mbmodify")
+	public ModelAndView mbmodify(HttpServletRequest request, LoginDomain loginDomain) {
+		ModelAndView mav = new ModelAndView();
+		HttpSession session = request.getSession();
+		loginDomain.setMbId(request.getParameter("id"));
+		loginDomain.setMbPw(request.getParameter("pw"));
+		loginDomain.setMbIp(CommonUtils.getClientIP(request));
+		loginDomain.setMbLevel(Integer.parseInt(request.getParameter("level")));
+		loginDomain.setMbUse("Y");
+		userService.mbUpdate(loginDomain);
+		mav.addObject("data", new AlertUtils("멤버 수정이 완료되었습니다.", "/main"));
+		System.out.println("멤버 수정 완료");
+		mav.setViewName("alert/alert");
+		session.invalidate();
+		return mav;
+	}
 }

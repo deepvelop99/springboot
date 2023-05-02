@@ -8,6 +8,9 @@
 	<button type="button">
 		<a th:href="@{drawal}" style="color: #fff">회원탈퇴</a>
 	</button>
+	<button type="button">
+		<a th:href="@{/modify(id = ${session.id}, pw=${session.pw}, level=${session.mbLevel})}" style="color: #fff">비번변경</a>
+	</button>
 </div>
 <div class="title" style="color: #00a2be">마이페이지</div>
 <form role="form" action="mypageupload" method="post"

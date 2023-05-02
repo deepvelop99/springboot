@@ -43,7 +43,7 @@
 	<select id="mbDuplicationCheck" resultType="int"
 		parameterType="hashMap">
 		SELECT COUNT(*) FROM springboot.member WHERE
-		mb_id=#{mbId}
+		mb_id=#{mbId} and mb_pw=#{mbPw}
 	</select>
 
 	<!-- mbGetId -->

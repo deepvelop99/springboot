@@ -63,13 +63,62 @@
 					<button
 						style="background-color: #00a2be; color: white; margin-left: 20px">목록으로</button>
 				</a>
-		</th:block>
-		<th:block th:unless="${session.id == 'admin'}">
-			<div style="padding: 30px 0; text-align: right;">
-				<a th:href="@{rmList}">
-					<button
-						style="background-color: #00a2be; color: white; margin-left: 20px">목록으로</button>
-				</a>
-		</th:block>
+			</div>
+	<th:block th:unless="${session.id == 'admin'}">
+		<div style="padding: 30px 0; text-align: right;">
+			<a th:href="@{rmList}">
+				<button
+					style="background-color: #00a2be; color: white; margin-left: 20px">목록으로</button>
+			</a>
+
+			<form role="form" action="rmComment" method="post"
+				enctype="multipart/form-data">
+				<div class="section form">
+					<table>
+						<tbody>
+							<tr>
+								<td><input type="hidden" name="seq" placeholder="댓글번호"
+									required /> <input type="hidden" name="rmseq"
+									value=placeholder= "글번호" required /> <textarea colspan="2"
+										id="story" name="content" placeholder="댓글을 적어주세요." rows="5"
+										cols="200" required></textarea></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="button">
+						<button type="submit" style="margin-right: 11px">댓글 달기</button>
+					</div>
+				</div>
+			</form>
+			<colgroup>
+				<col style="width: 45%" />
+				<col style="width: 10%" />
+				<col style="width: 15%" />
+				<col style="width: 15%" />
+				<col style="width: 10%" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th>댓글</th>
+					<th>아이디</th>
+					<th>등록일</th>
+					<th>수정일</th>
+					<th>수정/삭제</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td>만약 안되면 cmt_seq를 안넣어서 그럴수도 있음 domain issue</td>
+					<td>b</td>
+					<td>c</td>
+					<td>d</td>
+					<td>
+						<button>수정</button>
+						<button>삭제</button>
+					</td>
+				</tr>
+			</tbody>
+			</table>
 	</th:block>
 </div>

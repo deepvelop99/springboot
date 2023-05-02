@@ -1,6 +1,10 @@
 package com.co.kr.controller;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.co.kr.domain.BoardListDomain;
@@ -31,7 +34,6 @@ import com.co.kr.vo.LoginVO;
 import lombok.extern.slf4j.Slf4j;
 import com.co.kr.service.TodoService;
 import com.co.kr.domain.TodoListDomain;
-import com.co.kr.mapper.TodoMapper;
 
 @Controller
 @Slf4j
@@ -46,6 +48,32 @@ public class UserController {
 
 	@Autowired
 	private TodoService todoService;
+	
+	//mac주소 가져오는 함수
+	public String getLocalMacAddress() {
+	 	String result = "";
+		InetAddress ip;
+
+		try {
+			ip = InetAddress.getLocalHost();
+			System.out.println(ip);
+			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+			System.out.println(network);
+			byte[] mac = network.getHardwareAddress();
+			System.out.println(mac);
+		   
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < mac.length; i++) {
+				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+			}
+				result = sb.toString();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (SocketException e){
+			e.printStackTrace();
+		}
+		return result;
+	 }
 	
 	// 초기화면 설정
 	@RequestMapping(value = "board")
@@ -71,6 +99,7 @@ public class UserController {
 		session.setAttribute("ip", IP);
 		session.setAttribute("id", loginDomain.getMbId());
 		session.setAttribute("mbLevel", loginDomain.getMbLevel());
+		session.setAttribute("mac", getLocalMacAddress());
 
 		List<BoardListDomain> items = uploadService.boardList();
 		System.out.println("items ==> " + items);
@@ -78,7 +107,6 @@ public class UserController {
 		mav.setViewName("board/boardList.html");
 		return mav;
 	};
-
 	// 좌측 메뉴 클릭시 보드화면 이동 (로그인된 상태)
 	@RequestMapping(value = "bdList")
 	public ModelAndView bdList() {
@@ -297,6 +325,7 @@ public class UserController {
 		loginDomain.setMbId(request.getParameter("id"));
 		loginDomain.setMbPw(request.getParameter("pw"));
 		loginDomain.setMbIp(CommonUtils.getClientIP(request));
+		loginDomain.setMbLevel(2);
 		loginDomain.setMbUse("Y");
 		userService.mbUpdate(loginDomain);
 		mav.addObject("data", new AlertUtils("멤버 수정이 완료되었습니다.", "adList"));
@@ -371,7 +400,7 @@ public class UserController {
 		mav.setViewName("board/boardList.html");
 		return mav;
 	}
-	
+
 	@RequestMapping(value="searchMyContent")
 	public ModelAndView searchMyContent(HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView();

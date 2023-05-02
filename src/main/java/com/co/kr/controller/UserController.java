@@ -310,10 +310,12 @@ public class UserController {
 		String id = request.getParameter("id");
 		String pw = request.getParameter("pw");
 		String mbSeq = request.getParameter("mbSeq");
+		Integer level = Integer.parseInt(request.getParameter("level"));
 		mav.addObject("mbId", id);
 		mav.addObject("mbPw", pw);
 		mav.addObject("mbSeq", mbSeq);
 		mav.addObject("items", items);
+		mav.addObject("level", level);
 		mav.setViewName("admin/adminEditList");
 		return mav;
 	}
@@ -325,7 +327,7 @@ public class UserController {
 		loginDomain.setMbId(request.getParameter("id"));
 		loginDomain.setMbPw(request.getParameter("pw"));
 		loginDomain.setMbIp(CommonUtils.getClientIP(request));
-		loginDomain.setMbLevel(2);
+		loginDomain.setMbLevel(Integer.parseInt(request.getParameter("level")));
 		loginDomain.setMbUse("Y");
 		userService.mbUpdate(loginDomain);
 		mav.addObject("data", new AlertUtils("멤버 수정이 완료되었습니다.", "adList"));
